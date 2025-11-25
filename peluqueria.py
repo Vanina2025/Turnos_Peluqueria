@@ -98,7 +98,7 @@ class Peluqueria:
                 and turno.hora == hora.strftime("%H:%M")
             )
                 return True
-                return False
+        return False
 
     def registrar_cliente(self):
         print("\n--- Registrar nuevo cliente ---")
