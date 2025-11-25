@@ -3,40 +3,30 @@ from datetime import datetime
 import csv
 import os
 
-
 CLIENTES_FILE = "clientes.csv"
 TURNOS_FILE = "turnos.csv"
 
-
-@dataclass
 class Cliente:
     dni: str
     nombre: str
     telefono: str
 
-
-@dataclass
 class Turno:
     id_turno: int
     dni_cliente: str
-    fecha: str  # YYYY-MM-DD
-    hora: str   # HH:MM
+    fecha: str  
+    hora: str   
     servicio: str
     estado: str = "ACTIVO"  # ACTIVO / CANCELADO
 
-
 class Peluqueria:
-    def __init__(self):
-        # "Base de datos" en memoria
+    def __init__(self): 
         self.clientes: dict[str, Cliente] = {}
         self.turnos: dict[int, Turno] = {}
         self.next_id = 1
-        # Al iniciar, intento cargar datos desde CSV
         self.cargar_datos()
 
-    # ----------------- Persistencia -----------------
     def cargar_datos(self):
-        """Carga clientes y turnos desde los CSV, si existen."""
         if os.path.exists(CLIENTES_FILE):
             with open(CLIENTES_FILE, newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
@@ -64,10 +54,9 @@ class Peluqueria:
                     self.turnos[turno.id_turno] = turno
                     if turno.id_turno > max_id:
                         max_id = turno.id_turno
-                self.next_id = max_id + 1
+                    self.next_id = max_id + 1
 
     def guardar_datos(self):
-        """Guarda el contenido de los dicts en los CSV."""
         with open(CLIENTES_FILE, "w", newline="", encoding="utf-8") as f:
             fieldnames = ["dni", "nombre", "telefono"]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -82,8 +71,6 @@ class Peluqueria:
             for turno in self.turnos.values():
                 writer.writerow(asdict(turno))
 
-    # ----------------- Utilidades -----------------
-    @staticmethod
     def pedir_fecha():
         while True:
             fecha_str = input("Ingrese la fecha (DD/MM/AAAA): ")
@@ -93,7 +80,7 @@ class Peluqueria:
             except ValueError:
                 print("Fecha inválida. Intente nuevamente.")
 
-    @staticmethod
+   
     def pedir_hora():
         while True:
             hora_str = input("Ingrese la hora (HH:MM, formato 24hs): ")
@@ -104,17 +91,15 @@ class Peluqueria:
                 print("Hora inválida. Intente nuevamente.")
 
     def turno_ocupado(self, fecha, hora):
-        """Valida que no haya dos turnos activos en el mismo horario."""
         for turno in self.turnos.values():
             if (
                 turno.estado == "ACTIVO"
                 and turno.fecha == fecha.isoformat()
                 and turno.hora == hora.strftime("%H:%M")
-            ):
+            )
                 return True
-        return False
+                return False
 
-    # ----------------- Operaciones de negocio -----------------
     def registrar_cliente(self):
         print("\n--- Registrar nuevo cliente ---")
         dni = input("DNI: ").strip()
@@ -183,9 +168,7 @@ class Peluqueria:
         if not turnos_a_mostrar:
             print("No se encontraron turnos con ese criterio.\n")
             return
-
-        # Ordenar por fecha y hora
-        turnos_a_mostrar.sort(key=lambda t: (t.fecha, t.hora))
+            turnos_a_mostrar.sort(key=lambda t: (t.fecha, t.hora))
 
         for t in turnos_a_mostrar:
             cliente = self.clientes.get(t.dni_cliente)
@@ -241,7 +224,7 @@ class Peluqueria:
         self.guardar_datos()
         print("Turno actualizado.\n")
 
-    # ----------------- Menú principal -----------------
+    
     def ejecutar(self):
         while True:
             print("==== Sistema de turnos para peluquería ====")
