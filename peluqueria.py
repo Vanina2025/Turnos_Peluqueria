@@ -17,7 +17,7 @@ class Turno:
     fecha: str  
     hora: str   
     servicio: str
-    estado: str = "ACTIVO"  # ACTIVO / CANCELADO
+    estado: str = "ACTIVO"  
 
 class Peluqueria:
     def __init__(self): 
